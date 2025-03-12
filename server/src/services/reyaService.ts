@@ -74,3 +74,6 @@ export function initReyaWebSocket() {
     console.error('Error initializing Reya WebSocket:', error);
   }
 }
+export function onReyaPriceUpdate(callback: (asset: string, price: number) => void) {
+  priceCallbacks.push(callback);
+}
