@@ -30,7 +30,7 @@ export function initReyaWebSocket() {
   try {
     // Create socket client using the official SDK
     const socketClient = new SocketClient({
-      environment: 'production',  // production/test/local
+      environment: 'production',  // To ensure we're getting the latest prices, also required because Vertex is using production
       onOpen: () => {
         console.log('Reya WebSocket connected');
 

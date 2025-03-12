@@ -6,7 +6,10 @@ dotenv.config();
 
 const VERTEX_WS_URL = 'wss://gateway.prod.vertexprotocol.com/v1/ws';
 
-const PRODUCT_ID = 'BTC';
+// Product IDs for BTC
+const PRODUCT_IDS = {
+  'BTC': 2  // BTC-PERP
+};
 
 let isConnected = false;
 let priceCallbacks: ((asset: string, price: number) => void)[] = [];
@@ -24,7 +27,7 @@ export function initVertexWebSocket() {
     // Subscribe to market prices for BTC only
     const message = JSON.stringify({
       type: "market_price",
-      product_id: newFunction(),
+      product_id: PRODUCT_IDS['BTC']
     });
     websocket?.send(message);
   });
@@ -38,7 +41,7 @@ export function initVertexWebSocket() {
         const productId = message.data.product_id;
 
         // Only process BTC price updates
-        if (productId === PRODUCT_ID) {
+        if (productId === PRODUCT_IDS['BTC']) {
           // Calculate mid price from bid and ask
           const bidPrice = parseFloat(message.data.bid_x18) / 1e18;
           const askPrice = parseFloat(message.data.ask_x18) / 1e18;
@@ -48,7 +51,7 @@ export function initVertexWebSocket() {
           latestPrice = midPrice;
 
           // Notify all callbacks
-          priceCallbacks.forEach(callback => callback(PRODUCT_ID, midPrice));
+          priceCallbacks.forEach(callback => callback('BTC', midPrice));
         }
       }
     } catch (error) {
