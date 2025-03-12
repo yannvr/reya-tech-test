@@ -29,7 +29,6 @@ const PriceTable = ({ prices }: PriceTableProps) => {
               ? ((Math.abs(data.reya - data.vertex) / data.reya) * 100).toFixed(2)
               : '0.00';
 
-            // Determine if there's an arbitrage opportunity (difference > 0.5%)
             const hasArbitrageOpportunity = parseFloat(diffPercent) > 0.5;
 
             return (
