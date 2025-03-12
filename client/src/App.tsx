@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from 'react'
+import PriceTable from './components/PriceTable';
 
-// Define types for price data
+
 interface PriceData {
   reya: number;
   vertex: number;
+  timestamp: number;
 }
 
 interface PriceUpdate {
-  asset: string;
+  asset: 'BTC'; // We will only accept BTC for the assignment
   reya: number;
   vertex: number;
 }
@@ -15,12 +17,7 @@ interface PriceUpdate {
 function App() {
   // State for price data
   const [prices, setPrices] = useState<Record<string, PriceData>>({
-    BTC: { reya: 0, vertex: 0, }
-  });
-
-  // State for price history (for charts)
-  const [priceHistory, setPriceHistory] = useState<Record<string, PriceData[]>>({
-    BTC: []
+    BTC: { reya: 0, vertex: 0, timestamp: Date.now() }
   });
 
   // State for connection status
@@ -52,30 +49,9 @@ function App() {
             [data.asset]: {
               reya: data.reya,
               vertex: data.vertex,
+              timestamp: Date.now()
             }
           }));
-
-          // Update price history
-          setPriceHistory(prev => {
-            const newHistory = { ...prev };
-
-            // Add new data point
-            newHistory[data.asset] = [
-              ...newHistory[data.asset] || [],
-              {
-                reya: data.reya,
-                vertex: data.vertex,
-                timestamp: data.timestamp
-              }
-            ];
-
-            // Limit history to 100 points
-            if (newHistory[data.asset].length > 100) {
-              newHistory[data.asset] = newHistory[data.asset].slice(-100);
-            }
-
-            return newHistory;
-          });
         } catch (error) {
           console.error('Error parsing message:', error);
         }
@@ -115,7 +91,11 @@ function App() {
           {connected ? 'Connected' : 'Disconnected'}
         </div>
       </header>
-
+      <main>
+        <div className="price-tables">
+          <PriceTable prices={prices} />
+        </div>
+      </main>
     </div>
   )
 }
