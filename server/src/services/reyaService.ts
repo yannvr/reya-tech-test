@@ -22,9 +22,8 @@ interface ReyaCandleMessage extends SocketMessage {
 
 let priceCallbacks: ((asset: string, price: number) => void)[] = [];
 
-const latestPrices: Record<string, number> = {
-  'BTC': 0
-};
+// Store latest price as a single value
+let latestPrice = 0;
 
 export function initReyaWebSocket() {
 
@@ -57,7 +56,7 @@ export function initReyaWebSocket() {
 
               if (ticker && closePrice && ticker === 'BTC-rUSD') {
                 const asset = 'BTC';
-                latestPrices[asset] = closePrice;
+                latestPrice = closePrice;
                 console.log(`Reya price update for ${asset}: ${closePrice}`);
                 // Notify all callbacks
                 priceCallbacks.forEach(callback => callback(asset, closePrice));
@@ -74,8 +73,4 @@ export function initReyaWebSocket() {
   } catch (error) {
     console.error('Error initializing Reya WebSocket:', error);
   }
-}
-
-export function onReyaPriceUpdate(callback: (asset: string, price: number) => void) {
-  priceCallbacks.push(callback);
 }
